@@ -9,8 +9,7 @@ import {Box} from "@react-three/drei";
 
 const secretColors = [0x37a6ae, 0x67ae37, 0xae8b37, 0xae37aa, 0xfff]
 
-
-function showSecretColor(e){
+function showSecretColor(e, ref){
     e.intersection.object.material.color = e.intersection.object.secretColor
     e.intersection.object.geometry.colorsNeedUpdate = true;
 }
@@ -19,19 +18,23 @@ function GamePiece(props){
     const ref = useRef();
     const color = 0x123456
     const onSelectStart = (e) => {
+        gsap.to(e.intersection.object.rotation, { x: Math.PI/2, duration: 1,  ease:Sine.easeIn });
         showSecretColor(e)
         props.gamePieceSelected(e)
-        gsap.to(e.intersection.object.rotation, { x: Math.PI/2, duration: 1,  ease:Sine.easeIn });
     }
 
     const onSelect = (e) => {
+       // gsap.to(e.intersection.object.rotation, { x: Math.PI/2, duration: 1,  ease:Sine.easeIn });
 
+      //  showSecretColor(e)
     }
 
     const onSelectEnd = (e) => {
-        gsap.to(e.intersection.object.rotation, { x: -Math.PI/2, duration: 1,  ease:Sine.easeIn });
         e.intersection.object.material.color = new Color(color)
         e.intersection.object.geometry.colorsNeedUpdate = true;
+        gsap.to(e.intersection.object.rotation, { x: -Math.PI/2, duration: 1,  ease:Sine.easeIn });
+       // showSecretColor(e)
+        props.gamePieceSelected(e, true)
     }
 
     return (

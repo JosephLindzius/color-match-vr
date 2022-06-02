@@ -25,9 +25,7 @@ const ColorMatch = () => {
     const { player } = useXR()
     const {scene} = useThree()
 
-
-
-    function gamePieceSelected(e){
+    function gamePieceSelected(e, deselect){
         let selection = {
             one: {
                 controllerId: null,
@@ -41,6 +39,9 @@ const ColorMatch = () => {
             },
         }
         const mesh = e.intersection.object
+        if(deselect){
+            console.log('deselected')
+        }
 
         if(selectedGamePieces.one.controllerId === null && selectedGamePieces.two.controllerId === null) {
             selection.one.controllerId = e.controller.controller.uuid
@@ -58,8 +59,7 @@ const ColorMatch = () => {
             setSelectedGamePieces(selection)
         }
         //todo see what is the bug here Secret color disappears
-        /*
-        if(selectedGamePieces.one.controllerId === e.controller.controller.uuid){
+       /* if(selectedGamePieces.one.controllerId === e.controller.controller.uuid){
             selection.one.controllerId = selectedGamePieces.one.controllerId
             selection.one.mesh = mesh
             selection.one.secretColor = mesh.secretColor
@@ -91,15 +91,11 @@ const ColorMatch = () => {
         gsap.ticker.tick()
     });
 
-    useXREvent('squeeze', ()=>{
+    useXREvent('squeezestart', ()=>{
         if(selectedGamePieces.one.secretColor.r === selectedGamePieces.two.secretColor.r
             && selectedGamePieces.one.secretColor.b === selectedGamePieces.two.secretColor.b
             && selectedGamePieces.one.secretColor.g === selectedGamePieces.two.secretColor.g){
             console.log("match!")
-            selectedGamePieces.one.mesh.material.opacity = 0
-                selectedGamePieces.one.mesh.geometry.colorsNeedUpdate = true;
-            selectedGamePieces.two.mesh.material.opacity = 0
-                selectedGamePieces.two.mesh.geometry.colorsNeedUpdate = true;
         }
     })
     useEffect(() => {
@@ -115,7 +111,7 @@ const ColorMatch = () => {
           <Sky />
           {[...Array(4)].map((_, i) => (
               [...Array(5)].map((_, j) => (
-                 <GamePiece key={generateUUID()} i={i} j={j} gamePieceSelected={gamePieceSelected}></GamePiece>
+                 <GamePiece key={generateUUID()} i={i} j={j} gamePieceSelected={gamePieceSelected}/>
               ))
           ))}
           <Plane position={[0,-3,0]} args={[10,10]} rotation={[-Math.PI/2, 0, 0]} receiveShadow>
